@@ -6,7 +6,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import warnings
-warnings.filterwarnings('ignore')
+import os
 
 # Page configuration
 st.set_page_config(
@@ -91,27 +91,31 @@ st.markdown("""
 def load_data():
     """Load all datasets and models"""
     try:
+        # Define base path to ensure files are found regardless of execution context
+        base_path = os.path.dirname(__file__)
+
         # Load datasets
-        diseases_df = pd.read_csv('datasets/symptoms/unique_diseases.csv', encoding='latin1')
-        symptoms_df = pd.read_csv('datasets/symptoms/unique_symptoms.csv', encoding='latin1')
-        severity_df = pd.read_csv('datasets/symptoms/refined data/Symptom-severity.csv', encoding='latin1')
-        description_df = pd.read_csv('datasets/symptoms/description.csv', encoding='latin1')
-        medications_df = pd.read_csv('datasets/symptoms/medications.csv', encoding='latin1')
-        diets_df = pd.read_csv('datasets/symptoms/diets.csv', encoding='latin1')
-        precautions_df = pd.read_csv('datasets/symptoms/precautions_df.csv', encoding='latin1')
-        train_data = pd.read_csv('datasets/symptoms/refined data/Train Data.csv', encoding='latin1')
+        diseases_df = pd.read_csv(os.path.join(base_path, 'datasets/symptoms/unique_diseases.csv'), encoding='latin1')
+        symptoms_df = pd.read_csv(os.path.join(base_path, 'datasets/symptoms/unique_symptoms.csv'), encoding='latin1')
+        severity_df = pd.read_csv(os.path.join(base_path, 'datasets/symptoms/refined data/Symptom-severity.csv'), encoding='latin1')
+        description_df = pd.read_csv(os.path.join(base_path, 'datasets/symptoms/description.csv'), encoding='latin1')
+        medications_df = pd.read_csv(os.path.join(base_path, 'datasets/symptoms/medications.csv'), encoding='latin1')
+        diets_df = pd.read_csv(os.path.join(base_path, 'datasets/symptoms/diets.csv'), encoding='latin1')
+        precautions_df = pd.read_csv(os.path.join(base_path, 'datasets/symptoms/precautions_df.csv'), encoding='latin1')
+        train_data = pd.read_csv(os.path.join(base_path, 'datasets/symptoms/refined data/Train Data.csv'), encoding='latin1')
         
         # Load additional datasets
-        heart_df = pd.read_csv('datasets/heart/heart.csv', encoding='utf-8-sig')
-        diabetes_df = pd.read_csv('datasets/diabetes/diabetes.csv', encoding='utf-8-sig')
+        heart_df = pd.read_csv(os.path.join(base_path, 'datasets/heart/heart.csv'), encoding='utf-8-sig')
+        diabetes_df = pd.read_csv(os.path.join(base_path, 'datasets/diabetes/diabetes.csv'), encoding='utf-8-sig')
         
-        heart_df.rename(columns={'ï»¿age': 'age'}, inplace=True)
+        if 'ï»¿age' in heart_df.columns:
+            heart_df.rename(columns={'ï»¿age': 'age'}, inplace=True)
         
         # Load trained models
-        with open('models/NaiveBayes.pkl', 'rb') as f:
+        with open(os.path.join(base_path, 'models/NaiveBayes.pkl'), 'rb') as f:
             model = pickle.load(f)
         
-        with open('models/label_encoder.pkl', 'rb') as f:
+        with open(os.path.join(base_path, 'models/label_encoder.pkl'), 'rb') as f:
             label_encoder = pickle.load(f)
         
         return {
