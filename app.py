@@ -206,8 +206,6 @@ def main():
     st.sidebar.markdown('<h1 class="main-header" style="text-align:left; font-size:2.2rem; margin-bottom:1rem;">🏥 Personalised Health Advisor</h1>', unsafe_allow_html=True)
     
     # Sidebar navigation with buttons instead of dropdown
-    st.sidebar.title("Navigation")
-    
     # Use session state to track current page
     if 'current_page' not in st.session_state:
         st.session_state.current_page = "🏠 Dashboard"
