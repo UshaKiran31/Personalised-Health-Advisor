@@ -75,14 +75,25 @@ st.markdown("""
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
         border: none;
-        border-radius: 25px;
+        border-radius: 8px;
         padding: 0.5rem 2rem;
         font-weight: bold;
+        transition: none !important;
+        transform: none !important;
+        box-shadow: none !important;
     }
     .stButton > button:hover {
         background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        color: white !important;
+    }
+    .stButton > button:active, .stButton > button:focus {
+        color: white !important;
+    }
+    [data-testid="stSidebar"] .stButton button {
+        text-align: left;
+        justify-content: flex-start;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -191,20 +202,53 @@ def get_disease_info(disease_name, data_dict):
     return info
 
 def main():
-    st.markdown('<h1 class="main-header">🏥 Personalised Health Advisor</h1>', unsafe_allow_html=True)
+    # Move the main header to the sidebar
+    st.sidebar.markdown('<h1 class="main-header" style="text-align:left; font-size:2.2rem; margin-bottom:1rem;">🏥 Personalised Health Advisor</h1>', unsafe_allow_html=True)
     
+    # Sidebar navigation with buttons instead of dropdown
+    st.sidebar.title("Navigation")
+    
+    # Use session state to track current page
+    if 'current_page' not in st.session_state:
+        st.session_state.current_page = "🏠 Dashboard"
+    
+    # Navigation buttons
+    if st.sidebar.button("🏠 Dashboard", use_container_width=True):
+        st.session_state.current_page = "🏠 Dashboard"
+    
+    if st.sidebar.button("🔍 Symptom Checker", use_container_width=True):
+        st.session_state.current_page = "🔍 Symptom Checker"
+    
+    if st.sidebar.button("📊 Health Analytics", use_container_width=True):
+        st.session_state.current_page = "📊 Health Analytics"
+    
+    if st.sidebar.button("💊 Disease Information", use_container_width=True):
+        st.session_state.current_page = "💊 Disease Information"
+    
+    if st.sidebar.button("❤️ Heart Health", use_container_width=True):
+        st.session_state.current_page = "❤️ Heart Health"
+    
+    if st.sidebar.button("🩸 Diabetes Risk", use_container_width=True):
+        st.session_state.current_page = "🩸 Diabetes Risk"
+    
+    if st.sidebar.button("📈 Data Insights", use_container_width=True):
+        st.session_state.current_page = "📈 Data Insights"
+    
+    # Add disclaimer below navigation
+    st.sidebar.markdown("""
+    <div style='background-color:#2E2913; border-left:4px solid #ffc107; padding:1rem; margin:1.5rem 0 0 0; border-radius:5px; color:#EAECEE; font-size:0.95rem;'>
+        <strong>Disclaimer:</strong> This tool is for educational purposes only and does not constitute medical advice. Always consult a qualified healthcare professional for diagnosis and treatment.
+    </div>
+    """, unsafe_allow_html=True)
+
     # Load data
     data_dict = load_data()
     if data_dict is None:
         st.error("Failed to load data. Please check your data files.")
         return
     
-    # Sidebar navigation
-    st.sidebar.title("Navigation")
-    page = st.sidebar.selectbox(
-        "Choose a feature:",
-        ["🏠 Dashboard", "🔍 Symptom Checker", "📊 Health Analytics", "💊 Disease Information", "❤️ Heart Health", "🩸 Diabetes Risk", "📈 Data Insights"]
-    )
+    # Page routing based on session state
+    page = st.session_state.current_page
     
     if page == "🏠 Dashboard":
         show_dashboard(data_dict)
