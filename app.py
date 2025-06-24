@@ -7,6 +7,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import warnings
 import os
+from urllib.parse import urlparse, parse_qs
 
 # Page configuration
 st.set_page_config(
@@ -15,6 +16,17 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# Handle navigation via query params for info-box links
+query_params = st.query_params
+if 'page' in query_params:
+    page_param = query_params['page'][0]
+    if page_param == 'HealthAnalytics':
+        st.session_state.current_page = "📊 Health Analytics"
+    elif page_param == 'DataInsights':
+        st.session_state.current_page = "📈 Data Insights"
+    elif page_param == 'Dashboard':
+        st.session_state.current_page = "🏠 Dashboard"
 
 # Custom CSS for better UI
 st.markdown("""
@@ -201,6 +213,10 @@ def get_disease_info(disease_name, data_dict):
     
     return info
 
+def format_symptom_key(symptom_key):
+    """Convert snake_case symptom key to human-readable format."""
+    return symptom_key.replace('_', ' ').title()
+
 def main():
     # Move the main header to the sidebar
     st.sidebar.markdown('<h1 class="main-header" style="text-align:left; font-size:2.2rem; margin-bottom:1rem;">🏥 Personalised Health Advisor</h1>', unsafe_allow_html=True)
@@ -217,9 +233,6 @@ def main():
     if st.sidebar.button("🔍 Symptom Checker", use_container_width=True):
         st.session_state.current_page = "🔍 Symptom Checker"
     
-    if st.sidebar.button("📊 Health Analytics", use_container_width=True):
-        st.session_state.current_page = "📊 Health Analytics"
-    
     if st.sidebar.button("💊 Disease Information", use_container_width=True):
         st.session_state.current_page = "💊 Disease Information"
     
@@ -228,9 +241,10 @@ def main():
     
     if st.sidebar.button("🩸 Diabetes Risk", use_container_width=True):
         st.session_state.current_page = "🩸 Diabetes Risk"
-    
-    if st.sidebar.button("📈 Data Insights", use_container_width=True):
-        st.session_state.current_page = "📈 Data Insights"
+
+    # Add About Us button (no Health Analytics/Data Insights sidebar buttons)
+    if st.sidebar.button("ℹ️ About Us", use_container_width=True):
+        st.session_state.current_page = "ℹ️ About Us"
     
     # Add disclaimer below navigation
     st.sidebar.markdown("""
@@ -252,14 +266,16 @@ def main():
         show_dashboard(data_dict)
     elif page == "🔍 Symptom Checker":
         show_symptom_checker(data_dict)
-    elif page == "📊 Health Analytics":
-        show_health_analytics(data_dict)
     elif page == "💊 Disease Information":
         show_disease_info_page(data_dict)
     elif page == "❤️ Heart Health":
         show_heart_health(data_dict)
     elif page == "🩸 Diabetes Risk":
         show_diabetes_risk(data_dict)
+    elif page == "ℹ️ About Us":
+        show_about_us(data_dict)
+    elif page == "📊 Health Analytics":
+        show_health_analytics(data_dict)
     elif page == "📈 Data Insights":
         show_data_insights(data_dict)
 
@@ -267,40 +283,7 @@ def show_dashboard(data_dict):
     """Show main dashboard"""
     st.markdown('<h2 class="sub-header">Welcome to Your Personal Health Assistant</h2>', unsafe_allow_html=True)
     
-    # Key metrics
-    col1, col2, col3, col4 = st.columns(4)
-    
-    with col1:
-        st.markdown(f"""
-        <div class="metric-card">
-            <h3>{len(data_dict['diseases'])}</h3>
-            <p>Diseases Covered</p>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with col2:
-        st.markdown(f"""
-        <div class="metric-card">
-            <h3>{len(data_dict['symptoms'])}</h3>
-            <p>Symptoms Analyzed</p>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with col3:
-        st.markdown(f"""
-        <div class="metric-card">
-            <h3>{len(data_dict['train_data'])}</h3>
-            <p>Training Records</p>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    with col4:
-        st.markdown(f"""
-        <div class="metric-card">
-            <h3>AI-Powered</h3>
-            <p>Naive Bayes Model</p>
-        </div>
-        """, unsafe_allow_html=True)
+    st.markdown('<p> The Personalized Health Advice App is a  virtual assistant that provides tailored health recommendations using user inputs and a trained machine learning model. It helps users assess health risks and receive lifestyle and medical suggestions based on their profile.</p>', unsafe_allow_html=True)
     
     # Quick access features
     st.markdown('<h3 class="sub-header">Quick Access Features</h3>', unsafe_allow_html=True)
@@ -332,106 +315,305 @@ def show_dashboard(data_dict):
         
         st.markdown("""
         <div class="info-box">
-            <h4>📊 Health Analytics</h4>
-            <p>Explore comprehensive health statistics, disease distributions, and symptom severity analysis.</p>
+            <h4>💊 Disease Information</h4>
+            <p>Browse comprehensive information about diseases, including descriptions, medications, dietary recommendations, and precautions.</p>
         </div>
         """, unsafe_allow_html=True)
 
 def show_symptom_checker(data_dict):
-    """Show symptom checker interface"""
+    """Show enhanced symptom checker interface with modern UI"""
     st.markdown('<h2 class="sub-header">🔍 Symptom Checker</h2>', unsafe_allow_html=True)
     
+    # Introduction section
     st.markdown("""
     <div class="info-box">
-        <h4>How it works:</h4>
-        <p>Select the symptoms you're experiencing from the list below. Our AI model will analyze your symptoms and provide a prediction with detailed information about the most likely condition.</p>
+        <h4>🤖 Smart Health Analysis</h4>
+        <p>Our AI-powered diagnostic tool analyzes your symptoms along with personal health factors to provide accurate health insights. 
+        Please provide your information below for a comprehensive assessment.</p>
     </div>
     """, unsafe_allow_html=True)
     
-    # Get all symptoms
+    # Personal Information Section
+    st.markdown("###  Personal Information")
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        age = st.number_input(
+            "Age", 
+            min_value=1, 
+            max_value=120, 
+            value=30,
+            help="Your current age in years"
+        )
+    
+    with col2:
+        gender = st.selectbox(
+            "Gender",
+            ["Male", "Female", "Other"],
+            help="Your biological gender"
+        )
+    
+    with col3:
+        urgency = st.selectbox(
+            "Symptom Urgency",
+            ["Mild", "Moderate", "Severe", "Emergency"],
+            help="How severe are your symptoms?"
+        )
+    
+    # Additional Health Context
+    st.markdown("#### Health Context")
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        duration = st.selectbox(
+            "How long have you had these symptoms?",
+            ["Less than 1 day", "1-3 days", "4-7 days", "1-2 weeks", "More than 2 weeks"],
+            help="Duration of symptoms"
+        )
+    
+    with col2:
+        medical_history = st.multiselect(
+            "Do you have any of these conditions?",
+            ["Diabetes", "Hypertension", "Heart Disease", "Asthma", "Allergies"],
+            help="Select any existing medical conditions"
+        )
+    
+    # Symptom Selection Section
+    st.markdown("### Symptom Selection")
+    
+    # Get all symptoms and organize them
     all_symptoms = data_dict['symptoms']['symptom'].tolist()
+    # Build a mapping from key to display value
+    symptom_display_dict = {key: format_symptom_key(key) for key in all_symptoms}
     
-    # Multi-select symptoms
-    selected_symptoms = st.multiselect(
-        "Select your symptoms:",
-        all_symptoms,
-        help="Choose all symptoms that apply to you"
-    )
+    # Create symptom categories for better organization
+    symptom_categories = {
+        "General Symptoms": [s for s in all_symptoms if any(word in s.lower() for word in ['fever', 'fatigue', 'weakness', 'weight', 'appetite'])],
+        "Pain & Discomfort": [s for s in all_symptoms if any(word in s.lower() for word in ['pain', 'ache', 'cramp', 'burning', 'stiff'])],
+        "Digestive": [s for s in all_symptoms if any(word in s.lower() for word in ['nausea', 'vomit', 'diarrhea', 'constipation', 'stomach', 'abdominal'])],
+        "Respiratory": [s for s in all_symptoms if any(word in s.lower() for word in ['cough', 'breathe', 'chest', 'throat', 'sinus'])],
+        "Neurological": [s for s in all_symptoms if any(word in s.lower() for word in ['headache', 'dizziness', 'confusion', 'memory', 'seizure'])],
+        "Skin & External": [s for s in all_symptoms if any(word in s.lower() for word in ['rash', 'skin', 'itch', 'swelling', 'bruising'])],
+        "Other": []
+    }
+    # Add uncategorized symptoms to "Other"
+    categorized_symptoms = set()
+    for symptoms in symptom_categories.values():
+        categorized_symptoms.update(symptoms)
+    symptom_categories["Other"] = [s for s in all_symptoms if s not in categorized_symptoms]
+    # Remove empty categories
+    symptom_categories = {k: v for k, v in symptom_categories.items() if v}
+    # Symptom selection with categories
+    selected_symptoms = []
+    # Option 1: Quick symptom search
+    search_term = st.text_input("Search for symptoms...", placeholder="Type to search symptoms")
+    if search_term:
+        filtered_symptoms = [s for s in all_symptoms if search_term.lower() in s.lower()]
+        if filtered_symptoms:
+            quick_selected = st.multiselect(
+                "Search Results:",
+                [symptom_display_dict[s] for s in filtered_symptoms],
+                key="quick_search"
+            )
+            # Map back to keys
+            selected_symptoms.extend([k for k, v in symptom_display_dict.items() if v in quick_selected])
+    st.markdown("#### 📋 Browse by Category")
+    # Tabs for symptom categories
+    tabs = st.tabs(list(symptom_categories.keys()))
+    for i, (category, symptoms) in enumerate(symptom_categories.items()):
+        with tabs[i]:
+            if symptoms:
+                # Create a more visual symptom selector
+                cols = st.columns(2)
+                for j, symptom in enumerate(symptoms):
+                    with cols[j % 2]:
+                        if st.checkbox(symptom_display_dict[symptom], key=f"{category}_{symptom}"):
+                            if symptom not in selected_symptoms:
+                                selected_symptoms.append(symptom)
+    # Remove duplicates
+    selected_symptoms = list(set(selected_symptoms))
+    # Display selected symptoms
+    if selected_symptoms:
+        st.markdown("### ✅ Selected Symptoms")
+        # Create symptom chips
+        cols = st.columns(min(len(selected_symptoms), 4))
+        for i, symptom in enumerate(selected_symptoms):
+            with cols[i % 4]:
+                st.markdown(f"""
+                <div style="background: #1B2631; 
+                           color: white; padding: 0.5rem; border-radius: 20px; 
+                           text-align: center; margin: 0.2rem; font-size: 0.9rem;">
+                    {symptom_display_dict[symptom]}
+                </div>
+                """, unsafe_allow_html=True)
+        st.write(f"**Total symptoms selected:** {len(selected_symptoms)}")
     
-    if st.button("🔍 Analyze Symptoms", type="primary"):
+    # Analysis button
+    if st.button("🔍 Analyze My Symptoms", type="primary", use_container_width=True):
         if len(selected_symptoms) == 0:
-            st.warning("Please select at least one symptom.")
+            st.error("❌ Please select at least one symptom to proceed with the analysis.")
         else:
-            with st.spinner("Analyzing your symptoms..."):
+            # Create loading animation
+            with st.spinner("🤖 AI is analyzing your symptoms..."):
+                import time
+                time.sleep(2)  # Simulate processing time
+                
                 predicted_disease, confidence = predict_disease(selected_symptoms, data_dict)
                 
                 if predicted_disease:
-                    st.success(f"Analysis Complete!")
+                    # Success message
+                    st.success("✅ Analysis Complete! Here are your personalized health insights:")
                     
-                    # Display results
-                    col1, col2 = st.columns([2, 1])
+                    # Create results layout
+                    result_col1, result_col2 = st.columns([2, 1])
                     
-                    with col1:
+                    with result_col1:
+                        # Main result card
+                        confidence_color = "green" if confidence > 0.7 else "orange" if confidence > 0.5 else "red"
                         st.markdown(f"""
-                        <div class="success-box">
-                            <h3>Predicted Condition: {predicted_disease}</h3>
-                            <p><strong>Confidence:</strong> {confidence:.1%}</p>
+                        <div style="background: #1B2631; 
+                                   color: white; padding: 2rem; border-radius: 15px; margin: 1rem 0;">
+                            <h2 style="margin: 0; color: white;"> Predicted Condition</h2>
+                            <h1 style="margin: 0.5rem 0; color: white;">{predicted_disease}</h1>
+                            <div style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; 
+                                       border-radius: 10px; display: inline-block;">
+                                <strong>Confidence Score: {confidence:.1%}</strong>
+                            </div>
                         </div>
                         """, unsafe_allow_html=True)
                         
-                        # Get disease information
-                        disease_info = get_disease_info(predicted_disease, data_dict)
+                        # Risk assessment based on age, gender, and urgency
+                        risk_factors = []
+                        if age > 65:
+                            risk_factors.append("Advanced age increases risk")
+                        if urgency in ["Severe", "Emergency"]:
+                            risk_factors.append("High symptom severity")
+                        if "More than 2 weeks" in duration:
+                            risk_factors.append("Chronic symptoms")
                         
-                        if disease_info:
+                        if risk_factors:
+                            st.markdown("# Additional Risk Factors")
+                            for factor in risk_factors:
+                                st.markdown(f"• {factor}")
+                        
+                        # Personalized recommendations based on demographics
+                        st.markdown("### Personalized Recommendations")
+                        
+                        recommendations = []
+                        
+                        if urgency == "Emergency":
+                            recommendations.append("🚨 **URGENT**: Seek immediate medical attention")
+                        elif urgency == "Severe":
+                            recommendations.append("⚡ Consider urgent care or ER visit")
+                        elif age > 65:
+                            recommendations.append("👴 Given your age, consider consulting a physician soon")
+                        elif duration == "More than 2 weeks":
+                            recommendations.append("📅 Chronic symptoms warrant medical evaluation")
+                        
+                        if gender == "Female" and age >= 18:
+                            recommendations.append("👩 Consider gynecological factors if relevant")
+                        
+                        for rec in recommendations[:3]:  # Show top 3 recommendations
+                            st.markdown(f"• {rec}")
+                    
+                    with result_col2:
+
+                        # Quick stats
+                        st.markdown("### 📈 Quick Stats")
+                        st.metric("Symptoms Analyzed", len(selected_symptoms))
+                        st.metric("Age Factor", f"{age} years")
+                        st.metric("Symptom Duration", duration)
+                    
+                    
+                    disease_info = get_disease_info(predicted_disease, data_dict)
+                    
+                    if disease_info:
+                        info_tabs = st.tabs(["Description", "Treatment", "Diet", "Precautions"])
+                        
+                        with info_tabs[0]:
                             if 'description' in disease_info:
-                                st.markdown("### 📖 Description")
-                                st.write(disease_info['description'])
-                            
+                                st.markdown(f"""
+                                <div>{disease_info['description']}</p>
+                                </div>
+                                """, unsafe_allow_html=True)
+                            else:
+                                st.info("Detailed description not available for this condition.")
+                        
+                        with info_tabs[1]:
                             if 'medications' in disease_info:
-                                st.markdown("### 💊 Recommended Medications")
-                                st.write(disease_info['medications'])
-                            
+                                st.markdown("### Recommended Medications")
+                                medications = disease_info['medications'].split(', ')
+                                for med in medications:
+                                    st.markdown(f"• **{med.strip()}**")
+                            else:
+                                st.info("Medication information not available.")
+                        
+                        with info_tabs[2]:
                             if 'diet' in disease_info:
-                                st.markdown("### 🍎 Dietary Recommendations")
-                                st.write(disease_info['diet'])
-                            
+                                st.markdown("### Dietary Guidelines")
+                                diet_items = disease_info['diet'].split(', ')
+                                for item in diet_items:
+                                    st.markdown(f"• {item.strip()}")
+                            else:
+                                st.info("Dietary information not available.")
+                        
+                        with info_tabs[3]:
                             if 'precautions' in disease_info:
-                                st.markdown("### ⚠️ Precautions")
-                                st.write(disease_info['precautions'])
+                                st.markdown("### Important Precautions")
+                                precautions = disease_info['precautions'].split(', ')
+                                for precaution in precautions:
+                                    st.markdown(f"• {precaution.strip()}")
+                            else:
+                                st.info("Precautionary information not available.")
                     
-                    with col2:
-                        st.markdown("### 📊 Confidence Score")
-                        fig = go.Figure(go.Indicator(
-                            mode="gauge+number+delta",
-                            value=confidence * 100,
-                            domain={'x': [0, 1], 'y': [0, 1]},
-                            title={'text': "Prediction Confidence"},
-                            delta={'reference': 50},
-                            gauge={
-                                'axis': {'range': [None, 100]},
-                                'bar': {'color': "darkblue"},
-                                'steps': [
-                                    {'range': [0, 50], 'color': "lightgray"},
-                                    {'range': [50, 80], 'color': "yellow"},
-                                    {'range': [80, 100], 'color': "green"}
-                                ],
-                                'threshold': {
-                                    'line': {'color': "red", 'width': 4},
-                                    'thickness': 0.75,
-                                    'value': 90
-                                }
-                            }
-                        ))
-                        fig.update_layout(height=300)
-                        st.plotly_chart(fig, use_container_width=True)
+                    # Action buttons
+                    st.markdown("### Next Steps")
+                    col1, col2, col3 = st.columns(3)
                     
+                    with col1:
+                        if st.button("🏥 Find Nearby Doctors", use_container_width=True):
+                            st.info("Feature coming soon! This will help you find healthcare providers in your area.")
+                    
+                    
+                    
+                    # Enhanced disclaimer
                     st.markdown("""
-                    <div class="warning-box">
-                        <h4>⚠️ Important Disclaimer</h4>
-                        <p>This is an AI-powered prediction tool for educational purposes only. Always consult with a qualified healthcare professional for proper diagnosis and treatment. This tool should not replace professional medical advice.</p>
+                    <div style="background: #2E2913; 
+                               color: white; padding: 1.5rem; border-radius: 15px; margin: 2rem 0;">
+                        <h4 style="margin: 0; color: white;">⚠️ Important Medical Disclaimer</h4>
+                        <p style="margin: 0.5rem 0 0 0; color: white;">
+                            This AI-powered analysis is for educational and informational purposes only. 
+                            It should NOT replace professional medical diagnosis or treatment. 
+                            Always consult with qualified healthcare professionals for proper medical care, 
+                            especially if you have severe symptoms or emergency conditions.
+                        </p>
                     </div>
                     """, unsafe_allow_html=True)
+                 
+                else:
+                    st.error("❌ Unable to analyze symptoms. Please try again or consult a healthcare professional.")
+    
+    # Help section
+    with st.expander("❓ How to use this tool effectively"):
+        st.markdown("""
+        **Tips for better results:**
+        
+        1. **Be specific**: Select symptoms that closely match what you're experiencing
+        2. **Provide accurate information**: Enter correct age, gender, and medical history
+        3. **Consider timing**: Note how long you've had symptoms
+        4. **Don't ignore severity**: Mark urgent symptoms appropriately
+        5. **Seek professional help**: Use this as a starting point, not a final diagnosis
+        
+        **When to seek immediate medical attention:**
+        - Chest pain or difficulty breathing
+        - Severe headache or confusion
+        - High fever (>103°F)
+        - Severe allergic reactions
+        - Loss of consciousness
+        - Severe bleeding or trauma
+        """)
 
+        
 def show_health_analytics(data_dict):
     """Show health analytics dashboard"""
     st.markdown('<h2 class="sub-header">📊 Health Analytics Dashboard</h2>', unsafe_allow_html=True)
@@ -509,19 +691,19 @@ def show_disease_info_page(data_dict):
         with col1:
             if disease_info:
                 if 'description' in disease_info:
-                    st.markdown("### 📖 Description")
+                    st.markdown("#### 📖 Description")
                     st.write(disease_info['description'])
                 
                 if 'medications' in disease_info:
-                    st.markdown("### 💊 Medications")
+                    st.markdown("#### 💊 Medications")
                     st.write(disease_info['medications'])
                 
                 if 'diet' in disease_info:
-                    st.markdown("### 🍎 Dietary Recommendations")
+                    st.markdown("#### 🍎 Dietary Recommendations")
                     st.write(disease_info['diet'])
                 
                 if 'precautions' in disease_info:
-                    st.markdown("### ⚠️ Precautions")
+                    st.markdown("#### ⚠️ Precautions")
                     st.write(disease_info['precautions'])
             else:
                 st.info("Detailed information not available for this disease.")
@@ -784,41 +966,85 @@ def show_diabetes_risk(data_dict):
             - Medication if prescribed
             """)
 
+def show_about_us(data_dict):
+    """Show About Us page with key metrics and info-boxes for Health Analytics and Data Insights"""
+    st.markdown('<h2 class="sub-header">About Us</h2>', unsafe_allow_html=True)
+    # Key metrics at the top (reuse dashboard metrics)
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.markdown(f"""
+        <div class="metric-card">
+            <h3>{len(data_dict['diseases'])}</h3>
+            <p>Diseases Covered</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with col2:
+        st.markdown(f"""
+        <div class="metric-card">
+            <h3>{len(data_dict['symptoms'])}</h3>
+            <p>Symptoms Analyzed</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with col3:
+        st.markdown(f"""
+        <div class="metric-card">
+            <h3>{len(data_dict['train_data'])}</h3>
+            <p>Training Records</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with col4:
+        st.markdown(f"""
+        <div class="metric-card">
+            <h3>AI-Powered</h3>
+            <p>Naive Bayes Model</p>
+        </div>
+        """, unsafe_allow_html=True)
+    # Info-boxes as clickable buttons for navigation
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown('''
+        <div class="info-box" style="cursor:pointer;">
+            <h4>📊 Health Analytics</h4>
+            <p>Explore comprehensive health statistics, disease distributions, and symptom severity analysis.</p>
+        </div>
+        ''', unsafe_allow_html=True)
+        if st.button("Go to Health Analytics", key="about_health_analytics", use_container_width=True):
+            st.session_state.current_page = "📊 Health Analytics"
+    with col2:
+        st.markdown('''
+        <div class="info-box" style="cursor:pointer;">
+            <h4>📈 Data Insights</h4>
+            <p>Gain insights from our datasets, including disease, symptom, heart, and diabetes data, to better understand health trends.</p>
+        </div>
+        ''', unsafe_allow_html=True)
+        if st.button("Go to Data Insights", key="about_data_insights", use_container_width=True):
+            st.session_state.current_page = "📈 Data Insights"
+
 def show_data_insights(data_dict):
     """Show data insights and statistics"""
     st.markdown('<h2 class="sub-header">📈 Data Insights & Statistics</h2>', unsafe_allow_html=True)
-    
     # Dataset overview
     st.markdown("### 📊 Dataset Overview")
-    
     col1, col2, col3 = st.columns(3)
-    
     with col1:
         st.metric("Total Diseases", len(data_dict['diseases']))
         st.metric("Total Symptoms", len(data_dict['symptoms']))
-    
     with col2:
         st.metric("Training Records", len(data_dict['train_data']))
         st.metric("Heart Disease Records", len(data_dict['heart']))
-    
     with col3:
         st.metric("Diabetes Records", len(data_dict['diabetes']))
         st.metric("Model Accuracy", "~85% (Estimated)")
-    
     # Top diseases by symptom count
     st.markdown("### 🏥 Top Diseases by Symptom Count")
-    
     train_data = data_dict['train_data']
     disease_symptom_counts = []
-    
     for _, row in train_data.iterrows():
         disease = row['Disease']
         symptom_count = row.iloc[1:].sum()
         disease_symptom_counts.append({'Disease': disease, 'Symptom_Count': symptom_count})
-    
     disease_counts_df = pd.DataFrame(disease_symptom_counts)
     disease_counts_df = disease_counts_df.sort_values('Symptom_Count', ascending=False).head(15)
-    
     fig = px.bar(
         disease_counts_df,
         x='Disease',
@@ -828,12 +1054,9 @@ def show_data_insights(data_dict):
     )
     fig.update_xaxes(tickangle=45)
     st.plotly_chart(fig, use_container_width=True)
-    
     # Symptom frequency analysis
     st.markdown("### 🔍 Most Common Symptoms")
-    
     symptom_frequencies = train_data.iloc[:, 1:].sum().sort_values(ascending=False).head(20)
-    
     fig = px.bar(
         x=symptom_frequencies.index,
         y=symptom_frequencies.values,
@@ -842,14 +1065,10 @@ def show_data_insights(data_dict):
     )
     fig.update_xaxes(tickangle=45)
     st.plotly_chart(fig, use_container_width=True)
-    
     # Heart disease dataset insights
     st.markdown("### ❤️ Heart Disease Dataset Insights")
-    
     heart_df = data_dict['heart']
-    
     col1, col2 = st.columns(2)
-    
     with col1:
         # Age distribution
         fig = px.histogram(
@@ -859,7 +1078,6 @@ def show_data_insights(data_dict):
             labels={'age': 'Age', 'count': 'Count'}
         )
         st.plotly_chart(fig, use_container_width=True)
-    
     with col2:
         # Gender distribution
         gender_counts = heart_df['sex'].value_counts()
@@ -869,14 +1087,10 @@ def show_data_insights(data_dict):
             title="Gender Distribution"
         )
         st.plotly_chart(fig, use_container_width=True)
-    
     # Diabetes dataset insights
     st.markdown("### 🩸 Diabetes Dataset Insights")
-    
     diabetes_df = data_dict['diabetes']
-    
     col1, col2 = st.columns(2)
-    
     with col1:
         # Glucose distribution
         fig = px.histogram(
@@ -886,7 +1100,6 @@ def show_data_insights(data_dict):
             labels={'Glucose': 'Glucose Level (mg/dl)', 'count': 'Count'}
         )
         st.plotly_chart(fig, use_container_width=True)
-    
     with col2:
         # BMI distribution
         fig = px.histogram(
