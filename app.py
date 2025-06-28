@@ -9,6 +9,13 @@ import warnings
 import os
 from urllib.parse import urlparse, parse_qs
 
+# Try to import Ollama, but handle the case where it's not available
+try:
+    from ollama import Client
+    OLLAMA_AVAILABLE = True
+except ImportError:
+    OLLAMA_AVAILABLE = False
+
 # Page configuration
 st.set_page_config(
     page_title="Personalised Health Advisor",
@@ -107,6 +114,172 @@ st.markdown("""
         text-align: left;
         justify-content: flex-start;
     }
+    .floating-chat-icon {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+    }
+    .chat-circle {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 50%;
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        cursor: pointer;
+        border: 3px solid #fff;
+        transition: box-shadow 0.2s;
+    }
+    .chat-circle:hover {
+        box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    }
+    .chat-modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #232946;
+        color: #fff;
+        border-radius: 18px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+        z-index: 9999;
+        width: 350px;
+        max-width: 95vw;
+        max-height: 80vh;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        border: 2px solid #764ba2;
+    }
+    .chat-modal-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 1rem 1.5rem;
+        font-size: 1.2rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .chat-modal-close {
+        cursor: pointer;
+        font-size: 1.3rem;
+        color: #fff;
+        margin-left: 1rem;
+    }
+    .chat-modal-body {
+        flex: 1;
+        padding: 1rem 1.5rem 0.5rem 1.5rem;
+        overflow-y: auto;
+        background: #232946;
+    }
+    .chat-modal-footer {
+        padding: 0.75rem 1.5rem 1rem 1.5rem;
+        background: #232946;
+        border-top: 1px solid #444;
+    }
+    .chat-message-user {
+        background: #764ba2;
+        color: #fff;
+        border-radius: 12px 12px 4px 12px;
+        padding: 0.5rem 1rem;
+        margin-bottom: 0.5rem;
+        align-self: flex-end;
+        max-width: 80%;
+        word-break: break-word;
+    }
+    .chat-message-bot {
+        background: #2c3e50;
+        color: #fff;
+        border-radius: 12px 12px 12px 4px;
+        padding: 0.5rem 1rem;
+        margin-bottom: 0.5rem;
+        align-self: flex-start;
+        max-width: 80%;
+        word-break: break-word;
+    }
+    .chat-modal::-webkit-scrollbar {
+        width: 8px;
+        background: #232946;
+    }
+    .chat-modal::-webkit-scrollbar-thumb {
+        background: #444;
+        border-radius: 4px;
+    }
+    /* Tooltip styles */
+    .symptom-tooltip {
+        position: relative;
+        display: inline-block;
+        cursor: help;
+    }
+    .symptom-tooltip .tooltiptext {
+        visibility: hidden;
+        width: 300px;
+        background-color: #2c3e50;
+        color: #fff;
+        text-align: left;
+        border-radius: 8px;
+        padding: 12px;
+        position: absolute;
+        z-index: 1000;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -150px;
+        opacity: 0;
+        transition: opacity 0.3s;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        border: 2px solid #3498db;
+    }
+    .symptom-tooltip .tooltiptext::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #2c3e50 transparent transparent transparent;
+    }
+    .symptom-tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }
+    /* Make the entire checkbox area trigger tooltip */
+    .stCheckbox > div {
+        position: relative;
+    }
+    .stCheckbox > div:hover .symptom-tooltip .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }
+    .symptom-checkbox {
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        margin: 4px 0;
+        border-radius: 6px;
+        transition: background-color 0.2s;
+        border: 1px solid transparent;
+    }
+    .symptom-checkbox:hover {
+        background-color: rgba(52, 152, 219, 0.1);
+        border-color: #3498db;
+    }
+    .symptom-checkbox input[type="checkbox"] {
+        margin-right: 8px;
+    }
+    .symptom-label {
+        font-weight: 500;
+        color: #2c3e50;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -126,6 +299,12 @@ def load_data():
         diets_df = pd.read_csv(os.path.join(base_path, 'datasets/symptoms/diets.csv'), encoding='latin1')
         precautions_df = pd.read_csv(os.path.join(base_path, 'datasets/symptoms/precautions_df.csv'), encoding='latin1')
         train_data = pd.read_csv(os.path.join(base_path, 'datasets/symptoms/refined data/Train Data.csv'), encoding='latin1')
+        
+        # Load symptom descriptions
+        symptom_descriptions_df = pd.read_csv(os.path.join(base_path, 'datasets/symptoms/symptom_descriptions.csv'), encoding='utf-8')
+        
+        # Load doctor consultation dataset
+        doctor_consult_df = pd.read_csv(os.path.join(base_path, 'datasets/symptoms/disease_doctor_to_consult.csv'), encoding='utf-8')
         
         # Load additional datasets
         heart_df = pd.read_csv(os.path.join(base_path, 'datasets/heart/heart.csv'), encoding='utf-8-sig')
@@ -153,7 +332,9 @@ def load_data():
             'heart': heart_df,
             'diabetes': diabetes_df,
             'model': model,
-            'label_encoder': label_encoder
+            'label_encoder': label_encoder,
+            'symptom_descriptions': symptom_descriptions_df,
+            'doctor_consult': doctor_consult_df
         }
     except Exception as e:
         st.error(f"Error loading data: {str(e)}")
@@ -211,11 +392,28 @@ def get_disease_info(disease_name, data_dict):
         precautions = prec_row.iloc[0].filter(like='Precaution').dropna().tolist()
         info['precautions'] = ', '.join(precautions)
     
+    # Get doctor to consult
+    doctor_row = data_dict['doctor_consult'][data_dict['doctor_consult']['Disease'] == disease_name]
+    if not doctor_row.empty:
+        info['doctor'] = doctor_row.iloc[0]['Doctor to Consult']
+    
     return info
 
 def format_symptom_key(symptom_key):
     """Convert snake_case symptom key to human-readable format."""
     return symptom_key.replace('_', ' ').title()
+
+def get_symptom_description(symptom_key, data_dict):
+    """Get description for a symptom from the symptom descriptions dataset."""
+    try:
+        descriptions_df = data_dict['symptom_descriptions']
+        description_row = descriptions_df[descriptions_df['Symptom'] == symptom_key]
+        if not description_row.empty:
+            return description_row.iloc[0]['Description']
+        else:
+            return "Description not available for this symptom."
+    except Exception as e:
+        return "Description not available for this symptom."
 
 def main():
     # Move the main header to the sidebar
@@ -229,20 +427,18 @@ def main():
     # Navigation buttons
     if st.sidebar.button("🏠 Dashboard", use_container_width=True):
         st.session_state.current_page = "🏠 Dashboard"
-    
     if st.sidebar.button("🔍 Symptom Checker", use_container_width=True):
         st.session_state.current_page = "🔍 Symptom Checker"
-    
     if st.sidebar.button("💊 Disease Information", use_container_width=True):
         st.session_state.current_page = "💊 Disease Information"
-    
     if st.sidebar.button("❤️ Heart Health", use_container_width=True):
         st.session_state.current_page = "❤️ Heart Health"
-    
     if st.sidebar.button("🩸 Diabetes Risk", use_container_width=True):
         st.session_state.current_page = "🩸 Diabetes Risk"
-
-    # Add About Us button (no Health Analytics/Data Insights sidebar buttons)
+    # Add AI Chatbot button
+    if st.sidebar.button("🤖 AI Chatbot", use_container_width=True):
+        st.session_state.current_page = "🤖 AI Chatbot"
+    # Add About Us button
     if st.sidebar.button("ℹ️ About Us", use_container_width=True):
         st.session_state.current_page = "ℹ️ About Us"
     
@@ -278,6 +474,8 @@ def main():
         show_health_analytics(data_dict)
     elif page == "📈 Data Insights":
         show_data_insights(data_dict)
+    elif page == "🤖 AI Chatbot":
+        show_ai_chatbot()
 
 def show_dashboard(data_dict):
     """Show main dashboard"""
@@ -410,40 +608,65 @@ def show_symptom_checker(data_dict):
     if search_term:
         filtered_symptoms = [s for s in all_symptoms if search_term.lower() in s.lower()]
         if filtered_symptoms:
-            quick_selected = st.multiselect(
-                "Search Results:",
-                [symptom_display_dict[s] for s in filtered_symptoms],
-                key="quick_search"
-            )
-            # Map back to keys
-            selected_symptoms.extend([k for k, v in symptom_display_dict.items() if v in quick_selected])
+            # Create search results with tooltips
+            for symptom in filtered_symptoms:
+                description = get_symptom_description(symptom, data_dict)
+                display_name = symptom_display_dict[symptom]
+                
+                col1, col2 = st.columns([1, 4])
+                with col1:
+                    is_checked = st.checkbox("", key=f"search_{symptom}")
+                    if is_checked and symptom not in selected_symptoms:
+                        selected_symptoms.append(symptom)
+                
+                with col2:
+                    st.markdown(f"""
+                    <div style="margin-top: 8px;">
+                        <span class="symptom-tooltip">
+                            <span style="font-weight: 500; color: #2c3e50; cursor: pointer;">
+                                {display_name}
+                            </span>
+                            <span class="tooltiptext">{description}</span>
+                        </span>
+                    </div>
+                    """, unsafe_allow_html=True)
     st.markdown("#### 📋 Browse by Category")
     # Tabs for symptom categories
     tabs = st.tabs(list(symptom_categories.keys()))
     for i, (category, symptoms) in enumerate(symptom_categories.items()):
         with tabs[i]:
             if symptoms:
-                # Create a more visual symptom selector
                 cols = st.columns(2)
                 for j, symptom in enumerate(symptoms):
                     with cols[j % 2]:
-                        if st.checkbox(symptom_display_dict[symptom], key=f"{category}_{symptom}"):
-                            if symptom not in selected_symptoms:
-                                selected_symptoms.append(symptom)
+                        description = get_symptom_description(symptom, data_dict)
+                        display_name = symptom_display_dict[symptom]
+                        checkbox_key = f"{category}_{symptom}"
+                        row = st.columns([1, 8])
+                        with row[0]:
+                            is_checked = st.checkbox("", key=checkbox_key, label_visibility="collapsed")
+                        with row[1]:
+                            st.markdown(f'<span class="symptom-tooltip" style="color:#fff; font-weight:600; font-size:1rem; cursor:pointer;">{display_name}<span class="tooltiptext">{description}</span></span>', unsafe_allow_html=True)
+                        if is_checked and symptom not in selected_symptoms:
+                            selected_symptoms.append(symptom)
     # Remove duplicates
     selected_symptoms = list(set(selected_symptoms))
     # Display selected symptoms
     if selected_symptoms:
         st.markdown("### ✅ Selected Symptoms")
-        # Create symptom chips
+        # Create symptom chips with tooltips
         cols = st.columns(min(len(selected_symptoms), 4))
         for i, symptom in enumerate(selected_symptoms):
             with cols[i % 4]:
+                description = get_symptom_description(symptom, data_dict)
                 st.markdown(f"""
-                <div style="background: #1B2631; 
-                           color: white; padding: 0.5rem; border-radius: 20px; 
-                           text-align: center; margin: 0.2rem; font-size: 0.9rem;">
-                    {symptom_display_dict[symptom]}
+                <div class="symptom-tooltip" style="margin: 0.2rem;">
+                    <div style="background: #1B2631; 
+                               color: white; padding: 0.5rem; border-radius: 20px; 
+                               text-align: center; font-size: 0.9rem; cursor: help;">
+                        {symptom_display_dict[symptom]}
+                    </div>
+                    <span class="tooltiptext">{description}</span>
                 </div>
                 """, unsafe_allow_html=True)
         st.write(f"**Total symptoms selected:** {len(selected_symptoms)}")
@@ -528,10 +751,11 @@ def show_symptom_checker(data_dict):
                     disease_info = get_disease_info(predicted_disease, data_dict)
                     
                     if disease_info:
-                        info_tabs = st.tabs(["Description", "Treatment", "Diet", "Precautions"])
+                        info_tabs = st.tabs(["Description", "Treatment", "Diet", "Precautions", "Doctor to Consult"])
                         
                         with info_tabs[0]:
                             if 'description' in disease_info:
+                                st.markdown("### About the Condition")
                                 st.markdown(f"""
                                 <div>{disease_info['description']}</p>
                                 </div>
@@ -565,15 +789,29 @@ def show_symptom_checker(data_dict):
                                     st.markdown(f"• {precaution.strip()}")
                             else:
                                 st.info("Precautionary information not available.")
-                    
-                    # Action buttons
-                    st.markdown("### Next Steps")
-                    col1, col2, col3 = st.columns(3)
-                    
-                    with col1:
-                        if st.button("🏥 Find Nearby Doctors", use_container_width=True):
-                            st.info("Feature coming soon! This will help you find healthcare providers in your area.")
-                    
+                        
+                        with info_tabs[4]:
+                            if 'doctor' in disease_info:
+                                st.markdown("### Recommended Specialist")
+                                st.markdown(f"""
+                                    <h4 style="margin: 0; color: #3498db;">{disease_info['doctor']}</h4>
+                                    <p style="margin: 0.5rem 0 0 0; color: #EAECEE;">
+                                        This specialist is recommended for the diagnosis and treatment of {predicted_disease}.
+                                    </p>
+                                </div>
+                                """, unsafe_allow_html=True)
+                                
+                                # Additional guidance
+                                st.markdown("#### 📋 Consultation Tips")
+                                st.markdown("""
+                                • **Prepare your symptoms**: Write down all symptoms and their duration<br>
+                                • **Medical history**: Bring any relevant medical records<br>
+                                • **Questions**: Prepare a list of questions for your doctor<br>
+                                • **Follow-up**: Schedule follow-up appointments as recommended<br>
+                                • **Emergency**: If symptoms worsen, seek immediate medical attention
+                                """, unsafe_allow_html=True)
+                            else:
+                                st.info("Specialist information not available for this condition.")
                     
                     
                     # Enhanced disclaimer
@@ -719,6 +957,17 @@ def show_disease_info_page(data_dict):
                 disease_data = train_data[train_data['Disease'] == selected_disease]
                 symptom_count = disease_data.iloc[0, 1:].sum()
                 st.write(f"**Common Symptoms:** {int(symptom_count)}")
+            
+            # Add doctor consultation information
+            if disease_info and 'doctor' in disease_info:
+                st.markdown("### 👨‍⚕️ Recommended Specialist")
+                st.markdown(f"""
+                <div style="background: #1B2631; 
+                           color: white; padding: 1rem; border-radius: 8px; 
+                           border-left: 4px solid #3498db; margin: 1rem 0;">
+                    <h4 style="margin: 0; color: #3498db; font-size: 1rem;">{disease_info['doctor']}</h4>
+                </div>
+                """, unsafe_allow_html=True)
 
 def show_heart_health(data_dict):
     """Show heart health assessment"""
@@ -1109,6 +1358,63 @@ def show_data_insights(data_dict):
             labels={'BMI': 'Body Mass Index', 'count': 'Count'}
         )
         st.plotly_chart(fig, use_container_width=True)
+def show_ai_chatbot():
+
+    st.markdown('<h2 style="font-size: 2.5rem; margin-bottom: 1rem; padding-bottom: 0.5rem;">🤖 AI Chatbot</h2>', unsafe_allow_html=True)
+    st.markdown("<p style='font-size: 1rem; border-bottom: 2px solid #3498db;'> I'm not a licensed medical professional, but I can provide general information and answer questions about various health topics. Keep in mind that I'm not capable of diagnosing medical conditions or providing personalized advice.<br>If you have a specific concern or question, I'll do my best to:<br>1. Provide general information on the topic<br>2. Offer suggestions for further research or consultation with a healthcare professional</p>", unsafe_allow_html=True)
+
+    # Check if Ollama is available
+    if not OLLAMA_AVAILABLE:
+        st.warning("⚠️ AI Chatbot is not available in this environment. This feature requires Ollama to be installed and running locally.")
+        st.info("To use this feature, please run the application locally with Ollama installed.")
+        return
+
+    try:
+        # Initialize Ollama client (default host: http://localhost:11434)
+        ollama_client = Client()
+        
+        if "messages" not in st.session_state:
+            st.session_state["messages"] = []
+
+        # Input box and send button
+        prompt = st.chat_input("Ask your query here...")
+        if prompt:
+            # Add user message immediately
+            st.session_state["messages"].append({"role": "user", "content": prompt})
+            st.rerun()
+
+        # Chat window (show all messages)
+        for msg in st.session_state["messages"]:
+            if msg["role"] == "user":
+                st.chat_message("user").write(msg["content"])
+            else:
+                st.chat_message("assistant").write(msg["content"])
+
+        # If the last message is from the user, get bot response
+        if st.session_state["messages"] and st.session_state["messages"][-1]["role"] == "user":
+            with st.spinner("Thinking..."):
+                try:
+                    history = []
+                    for m in st.session_state["messages"]:
+                        if m["role"] == "user":
+                            history.append({"role": "user", "content": m["content"]})
+                        else:
+                            history.append({"role": "assistant", "content": m["content"]})
+                    response = ollama_client.chat(
+                        model="llama3",
+                        messages=history
+                    )
+                    answer = response["message"]["content"]
+                    st.session_state["messages"].append({"role": "assistant", "content": answer})
+                    st.rerun()
+                except Exception as e:
+                    error_msg = f"Error communicating with Ollama: {str(e)}"
+                    st.error(error_msg)
+                    st.session_state["messages"].append({"role": "assistant", "content": error_msg})
+                    st.rerun()
+    except Exception as e:
+        st.error(f"Error initializing AI Chatbot: {str(e)}")
+        st.info("This feature requires Ollama to be installed and running locally.") 
 
 if __name__ == "__main__":
     main() 
