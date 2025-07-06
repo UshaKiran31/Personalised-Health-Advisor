@@ -1,0 +1,287 @@
+Disease,Doctor to Consult
+Tularemia,Infectious Disease Specialist
+Arthritis,Rheumatologist
+Stroke,Neurologist
+Lead poisoning,Toxicologist
+Sickle-cell anemia,Hematologist
+Myocardial Infarction (Heart Attack),Cardiologist
+Rabies,Infectious Disease Specialist
+Warkany syndrome,Geneticist
+Celiacs disease,Gastroenterologist
+Abscess,General Surgeon
+Perennial Allergic Conjunctivitis,Ophthalmologist/Allergist
+Lyme disease,Infectious Disease Specialist
+Japanese Encephalitis,Infectious Disease Specialist
+Hepatitis B,Hepatologist/Gastroenterologist
+Bronchitis,Pulmonologist
+Influenza,General Practitioner
+Multiple sclerosis,Neurologist
+Anthrax,Infectious Disease Specialist
+Brain Tumour,Neuro-oncologist/Neurosurgeon
+Hyperthyroidism,Endocrinologist
+Hepatitis A,Hepatologist/Gastroenterologist
+Coronavirus disease 2019 (COVID-19),General Practitioner/Infectious Disease Specialist
+Lupus erythematosus,Rheumatologist
+GERD,Gastroenterologist
+Migraine,Neurologist
+Carpal Tunnel Syndrome,Orthopedic Surgeon/Neurologist
+Lymphoma,Hematologist/Oncologist
+Tuberculosis,Pulmonologist/Infectious Disease Specialist
+Insomnia,Sleep Specialist/Neurologist
+Pneumonia,Pulmonologist/General Practitioner
+Goitre,Endocrinologist
+Polycystic ovary syndrome (PCOS),Gynecologist/Endocrinologist
+Rubella,General Practitioner
+Myopia,Ophthalmologist
+Postpartum depression/ Perinatal depression,Psychiatrist/Psychologist
+Vitamin B12 Deficiency,General Practitioner/Hematologist
+Fungal infection,Dermatologist/Infectious Disease Specialist
+Heat-Related Illnesses and Heat waves,Emergency Physician/General Practitioner
+Melanoma,Dermatologist/Oncologist
+Scrapie,Veterinarian (not a human disease)
+Autism,Developmental Pediatrician/Neurologist/Psychiatrist
+Sepsis,Intensivist/Infectious Disease Specialist
+Mouth Breathing,ENT Specialist (Otolaryngologist)
+Repetitive strain injury,Orthopedic Surgeon/Physiotherapist
+Iron Deficiency Anemia,General Practitioner/Hematologist
+Dengue,Infectious Disease Specialist
+Porphyria,Hematologist/Geneticist
+Bubonic plague,Infectious Disease Specialist
+Jaundice,Hepatologist/Gastroenterologist
+Strep throat,General Practitioner
+Ebola,Infectious Disease Specialist
+Tonsillitis,ENT Specialist (Otolaryngologist)
+Colitis,Gastroenterologist
+Oral Cancer,Oral Surgeon/Oncologist
+Leptospirosis,Infectious Disease Specialist
+Urticaria,Dermatologist/Allergist
+Yellow Fever,Infectious Disease Specialist
+Rheumatic fever,Cardiologist/Rheumatologist
+Alcohol Abuse and Alcoholism,Addiction Specialist/Psychiatrist
+Bleeding Gums,Dentist/Periodontist
+Thalassaemia,Hematologist
+Glaucoma,Ophthalmologist
+Leukemia,Hematologist/Oncologist
+Hypoglycemia,Endocrinologist
+Rift Valley fever,Infectious Disease Specialist
+Neonatal Respiratory Disease Syndrome(NRDS),Neonatologist
+Breast Cancer / Carcinoma,Oncologist/Breast Surgeon
+Legionellosis,Infectious Disease Specialist/Pulmonologist
+Hypothyroid,Endocrinologist
+Botulism,Infectious Disease Specialist/Neurologist
+Eczema,Dermatologist
+Chickenpox,General Practitioner
+Interstitial cystitis,Urologist/Gynecologist
+Diabetic Retinopathy,Ophthalmologist
+Chlamydia,Gynecologist/Urologist/Infectious Disease Specialist
+Endometriosis,Gynecologist
+Asbestos-related diseases,Pulmonologist
+Ear infection,ENT Specialist (Otolaryngologist)
+Trachoma,Ophthalmologist
+papilloedema,Neurologist/Ophthalmologist
+Cerebral palsy,Neurologist/Developmental Pediatrician
+Rickets,Pediatrician/Endocrinologist
+Pelvic inflammatory disease,Gynecologist
+Necrotizing Fasciitis,Infectious Disease Specialist/General Surgeon
+Hepatitis D,Hepatologist/Gastroenterologist
+Mumps,General Practitioner
+Progeria,Geneticist
+Mononucleosis,General Practitioner/Infectious Disease Specialist
+Carbon monoxide poisoning,Emergency Physician/Toxicologist
+Zika virus disease,Infectious Disease Specialist
+Malaria,Infectious Disease Specialist
+Psoriasis,Dermatologist
+Colorectal Cancer,Gastroenterologist/Oncologist/Colorectal Surgeon
+Cancer,Oncologist
+Scurvy,General Practitioner
+(vertigo) Paroymsal Positional Vertigo,ENT Specialist (Otolaryngologist)/Neurologist
+Osteomyelitis,Infectious Disease Specialist/Orthopedic Surgeon
+Asthma,Pulmonologist/Allergist
+Chorea,Neurologist
+Heart attack,Cardiologist
+Peritonitis,General Surgeon/Gastroenterologist
+Gonorrhea,Urologist/Gynecologist/Infectious Disease Specialist
+Chronic cholestasis,Hepatologist/Gastroenterologist
+Bronchial Asthma,Pulmonologist/Allergist
+Down's Syndrome,Geneticist/Developmental Pediatrician
+Iritis,Ophthalmologist
+Alzheimer,Neurologist/Geriatrician
+Neoplasm,Oncologist
+Gastroenteritis,General Practitioner/Gastroenterologist
+Tetanus,Infectious Disease Specialist
+Crimean Congo haemorrhagic fever (CCHF),Infectious Disease Specialist
+Anaemia,Hematologist/General Practitioner
+Narcolepsy,Sleep Specialist/Neurologist
+Vasovagal syncope,Cardiologist/Neurologist
+Warts,Dermatologist
+Diabetes,Endocrinologist
+Common cold,General Practitioner
+Hepatitis,Hepatologist/Gastroenterologist
+Nipah virus infection,Infectious Disease Specialist
+Parkinson's Disease,Neurologist
+Antepartum hemorrhage (Bleeding in late pregnancy),Obstetrician
+AIDS,Infectious Disease Specialist
+Inflammatory Bowel Disease,Gastroenterologist
+Cholera,Infectious Disease Specialist/Gastroenterologist
+Keratoconjunctivitis Sicca (Dry eye syndrome),Ophthalmologist
+Paratyphoid fever,Infectious Disease Specialist/Gastroenterologist
+Presbyopia,Ophthalmologist
+Common Cold,General Practitioner
+Calculi,Urologist/Gastroenterologist
+Dehydration,General Practitioner/Emergency Physician
+Scabies,Dermatologist
+Gangrene,Vascular Surgeon/General Surgeon
+Tay-Sachs disease,Geneticist/Neurologist
+Premenstrual syndrome,Gynecologist/General Practitioner
+Smallpox,Infectious Disease Specialist (historically)
+Yaws,Infectious Disease Specialist
+Acute encephalitis syndrome,Neurologist/Infectious Disease Specialist
+Hepatitis E,Hepatologist/Gastroenterologist
+Osteoarthritis,Orthopedic Surgeon/Rheumatologist
+Neuralgia,Neurologist
+Black Death,Infectious Disease Specialist (historically)
+Laryngitis,ENT Specialist (Otolaryngologist)
+Astigmatism,Ophthalmologist
+Blindness,Ophthalmologist
+Osteoarthristis,Orthopedic Surgeon/Rheumatologist
+Post Menopausal Bleeding,Gynecologist
+Impetigo,Dermatologist/General Practitioner
+Nasal Polyps,ENT Specialist (Otolaryngologist)
+Chronic fatigue syndrome,General Practitioner/Neurologist/Rheumatologist
+High risk pregnancy,High-Risk Obstetrician
+Stomach ulcers,Gastroenterologist
+Trichomoniasis,Gynecologist/Urologist
+Sexually transmitted infections (STIs),Gynecologist/Urologist/Infectious Disease Specialist
+Epilepsy,Neurologist
+Kuru,Neurologist (historically)
+Kala-azar/ Leishmaniasis,Infectious Disease Specialist
+Measles,General Practitioner/Infectious Disease Specialist
+Dracunculiasis (guinea-worm disease),Infectious Disease Specialist
+Muscular dystrophy,Neurologist
+Dysentery,Gastroenterologist/Infectious Disease Specialist
+Irritable bowel syndrome,Gastroenterologist
+Bunion,Podiatrist/Orthopedic Surgeon
+Drug Reaction,Dermatologist/Allergist/Emergency Physician
+Scarlet fever,General Practitioner
+Mastitis,General Practitioner/Gynecologist
+Shigellosis,Gastroenterologist/Infectious Disease Specialist
+Congenital anomalies (birth defects),Geneticist/Pediatrician
+Congestive heart disease,Cardiologist
+Hypothyroidism,Endocrinologist
+Diabetes Mellitus,Endocrinologist
+Aseptic meningitis,Infectious Disease Specialist/Neurologist
+Hepatitis C,Hepatologist/Gastroenterologist
+Alcoholic hepatitis,Hepatologist/Gastroenterologist
+Dementia,Neurologist/Geriatrician
+Puerperal sepsis,Obstetrician/Infectious Disease Specialist
+Cavities,Dentist
+Bell's Palsy,Neurologist
+Stevens-Johnson syndrome,Dermatologist/Ophthalmologist/Intensivist
+Quinsy,ENT Specialist (Otolaryngologist)
+SIDS,Pediatrician (diagnosis after exclusion)
+Cervical spondylosis,Orthopedic Surgeon/Neurologist
+Genital herpes,Dermatologist/Urologist/Gynecologist/Infectious Disease Specialist
+Multiple myeloma,Hematologist/Oncologist
+Acne,Dermatologist
+Frost Bite,Emergency Physician/Vascular Surgeon
+Chicken pox,General Practitioner
+Appendicitis,General Surgeon
+Chikungunya Fever,Infectious Disease Specialist
+Mad cow disease,Neurologist (Creutzfeldt-Jakob Disease variant)
+Rheumatism,Rheumatologist
+Toxic shock syndrome,Infectious Disease Specialist/Emergency Physician
+SARS,Infectious Disease Specialist/Pulmonologist
+Anxiety,Psychiatrist/Psychologist/General Practitioner
+lactose intolerance,Gastroenterologist/General Practitioner
+Diphtheria,Infectious Disease Specialist
+Beriberi,General Practitioner/Neurologist
+hepatitis A,Hepatologist/Gastroenterologist
+Dimorphic hemmorhoids(piles),Proctologist/General Surgeon
+Candidiasis,Dermatologist/Gynecologist/Infectious Disease Specialist
+Syphilis,Infectious Disease Specialist/Dermatologist
+Human papillomavirus,Dermatologist/Gynecologist/Urologist
+Myasthenia gravis,Neurologist
+Obsessive Compulsive Disorder,Psychiatrist/Psychologist
+Shaken Baby Syndrome,Pediatrician/Neurologist (for diagnosis)
+Food Poisoning,General Practitioner/Gastroenterologist
+Turners Syndrome,Geneticist/Endocrinologist
+Hypertension,Cardiologist/General Practitioner
+Pericarditis,Cardiologist
+Adult Inclusion Conjunctivitis,Ophthalmologist
+Trichinosis,Infectious Disease Specialist
+Herpes Simplex,Dermatologist/Infectious Disease Specialist
+Schizophrenia,Psychiatrist
+Scrub Typhus,Infectious Disease Specialist
+Marburg fever,Infectious Disease Specialist
+Sub-conjunctival Haemorrhage,Ophthalmologist/General Practitioner
+Peptic ulcer diseae,Gastroenterologist
+Ectopic pregnancy,Gynecologist/Emergency Physician
+Middle East respiratory syndrome coronavirus (MERS‐CoV),Infectious Disease Specialist/Pulmonologist
+Keratoconus,Ophthalmologist
+Raynaud's Phenomenon,Rheumatologist/Vascular Specialist
+Varicose veins,Vascular Surgeon
+Chagas disease,Infectious Disease Specialist/Cardiologist
+Post-herpetic neuralgia,Neurologist/Pain Management Specialist
+Gaming disorder,Psychiatrist/Psychologist
+Shin splints,Orthopedic Surgeon/Sports Medicine Physician
+Preeclampsia,Obstetrician
+Ques fever,Infectious Disease Specialist
+Pulmonary embolism,Pulmonologist/Cardiologist/Emergency Physician
+Bad Breath (Halitosis),Dentist/Gastroenterologist/ENT Specialist
+Atrophy,Neurologist/Orthopedic Surgeon (depending on cause)
+Typhoid,Infectious Disease Specialist/Gastroenterologist
+Preterm birth,Obstetrician/Neonatologist
+"Hand, Foot and Mouth Disease",Pediatrician/General Practitioner
+Diarrhea,General Practitioner/Gastroenterologist
+Acquired Immuno Deficiency Syndrome,Infectious Disease Specialist
+Anisometropia,Ophthalmologist
+Taeniasis,Infectious Disease Specialist/Gastroenterologist
+Allergy,Allergist/Immunologist
+Paralysis (brain hemorrhage),Neurologist/Neurosurgeon
+Poliomyelitis,Infectious Disease Specialist/Neurologist
+Acquired Capillary Haemangioma of Eyelid,Ophthalmologist
+Rocky Mountain spotted fever,Infectious Disease Specialist
+Varicose Veins,Vascular Surgeon
+Urinary tract infection,Urologist/General Practitioner
+Orbital Dermoid,Ophthalmologist
+Alopecia (hair loss),Dermatologist
+Hypotonia,Neurologist/Pediatrician
+Shingles,Dermatologist/Infectious Disease Specialist
+Sciatica,Neurologist/Orthopedic Surgeon
+Leprosy,Infectious Disease Specialist/Dermatologist
+Condyloma,Dermatologist/Gynecologist/Urologist
+Burns,Burn Specialist/Emergency Physician
+Pinguecula,Ophthalmologist
+Fibromyalgia,Rheumatologist/Neurologist/Pain Management Specialist
+Sarcoidosis,Pulmonologist/Rheumatologist/Dermatologist (depending on organ involvement)
+Vitiligo,Dermatologist
+Lung cancer,Pulmonologist/Oncologist
+Chalazion,Ophthalmologist
+Corneal Abrasion,Ophthalmologist
+Hypermetropia,Ophthalmologist
+Obesity,Endocrinologist/Dietitian/General Practitioner
+Campylobacter infection,Gastroenterologist/Infectious Disease Specialist
+Early pregnancy loss,Gynecologist/Obstetrician
+Coronary Heart Disease,Cardiologist
+Cough,General Practitioner/Pulmonologist
+Amblyopia,Ophthalmologist
+Aniseikonia,Ophthalmologist
+Taeniasis/cysticercosis,Infectious Disease Specialist/Gastroenterologist
+Tennis elbow,Orthopedic Surgeon/Physiotherapist
+Amoebiasis,Gastroenterologist/Infectious Disease Specialist
+Childhood Exotropia,Pediatric Ophthalmologist
+Chronic obstructive pulmonary disease (COPD),Pulmonologist
+Kaposi’s Sarcoma,Oncologist/Dermatologist
+Eclampsia,Obstetrician/Gynecologist
+Guillain-Barré syndrome,Neurologist
+Brucellosis,Infectious Disease Specialist
+Amaurosis Fugax,Ophthalmologist/Neurologist
+Cleft Lip and Cleft Palate,Plastic Surgeon/Pediatrician
+Sarcoma,Oncologist/Orthopedic Surgeon (depending on location)
+Lice,General Practitioner/Dermatologist
+Tinnitus,ENT Specialist (Otolaryngologist)
+Fibroids,Gynecologist
+Myelitis,Neurologist
+Nausea and Vomiting of Pregnancy and Hyperemesis gravidarum,Obstetrician/Gynecologist
+Osteoporosis,Endocrinologist/Rheumatologist
+Haemophilia,Hematologist
