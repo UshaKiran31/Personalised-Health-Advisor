@@ -14,6 +14,13 @@ A comprehensive AI-powered health advisory application built with Streamlit that
   - Precautions and preventive measures
 - Confidence scoring with visual indicators
 
+### 📈 **Health Analysis**
+- Comprehensive health analysis based on user parameters
+- Calculates BMI and categorizes health status
+- Provides personalized meal and exercise recommendations
+- Assesses overall health risk and suggests improvements
+- Visualizes health metrics with interactive charts
+
 ### ❤️ **Heart Health Assessment**
 - Comprehensive heart disease risk evaluation
 - 14 medical parameters analysis
@@ -75,6 +82,7 @@ A comprehensive AI-powered health advisory application built with Streamlit that
 ```
 VHA/
 ├── app.py                          # Main Streamlit application
+├── health_analysis.py              # Health analysis module: BMI, risk, recommendations
 ├── requirements.txt                # Python dependencies
 ├── README.md                      # Project documentation
 ├── .gitignore                     # Git ignore rules
@@ -125,6 +133,9 @@ VHA/
 - Analyze heart disease and diabetes dataset patterns
 
 ## 🔧 Technical Details
+
+### **Health Analysis Module**
+- **health_analysis.py**: Provides BMI calculation, health risk assessment, and personalized recommendations for nutrition and exercise. Integrates interactive visualizations for user health metrics.
 
 ### **AI Model**
 - **Algorithm**: Naive Bayes Classifier
