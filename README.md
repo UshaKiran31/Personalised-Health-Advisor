@@ -77,38 +77,6 @@ A comprehensive AI-powered health advisory application built with Streamlit that
    - The app will automatically open at `http://localhost:8501`
    - If not, manually navigate to the URL shown in the terminal
 
-## 📁 Project Structure
-
-```
-VHA/
-├── app.py                          # Main Streamlit application
-├── health_analysis.py              # Health analysis module: BMI, risk, recommendations
-├── requirements.txt                # Python dependencies
-├── README.md                      # Project documentation
-├── .gitignore                     # Git ignore rules
-├── models/                        # Trained machine learning models
-│   ├── NaiveBayes.pkl            # Naive Bayes classifier model
-│   └── label_encoder.pkl         # Label encoder for disease mapping
-└── datasets/                      # Health datasets
-    ├── symptoms/                  # Symptom and disease datasets
-    │   ├── unique_diseases.csv   # List of unique diseases
-    │   ├── unique_symptoms.csv   # List of unique symptoms
-    │   ├── description.csv       # Disease descriptions
-    │   ├── medications.csv       # Disease medications
-    │   ├── diets.csv            # Dietary recommendations
-    │   ├── precautions_df.csv   # Disease precautions
-    │   ├── dis_symp_dict.txt    # Disease-symptom dictionary
-    │   ├── Main_Dataset.csv     # Main training dataset
-    │   ├── Original_Dataset.csv # Original dataset
-    │   ├── refined data/        # Processed training data
-    │   │   ├── Train Data.csv   # Training dataset
-    │   │   └── Symptom-severity.csv # Symptom severity data
-    │   └── workout_df.csv       # Exercise recommendations
-    ├── heart/                    # Heart disease dataset
-    │   └── heart.csv            # Heart disease risk data
-    └── diabetes/                 # Diabetes dataset
-        └── diabetes.csv         # Diabetes risk data
-```
 
 ## 🎯 How to Use
 
