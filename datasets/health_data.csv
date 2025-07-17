@@ -1,0 +1,8 @@
+activity_type,calories_burned,avg_heart_rate,duration_minutes
+Walking,200,100,30
+Swimming,350,120,45
+Cycling,300,110,40
+Weight Training,250,105,35
+Strength Training,270,108,40
+Yoga,150,90,60
+Running,400,130,30 
